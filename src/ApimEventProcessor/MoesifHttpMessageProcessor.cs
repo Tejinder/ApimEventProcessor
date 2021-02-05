@@ -272,9 +272,9 @@ namespace ApimEventProcessor
             if (p[MetadataName] != null)
                 metadata = (Dictionary<string, object>) p[MetadataName];
             metadata.Add("ApimMessageId", request.MessageId.ToString());
-			metadata.Add("ApimSubscriptionId", (String)request.HttpRequestMessage.Headers.GetValues("subscription_id").FirstOrDefault());
+		/*	metadata.Add("ApimSubscriptionId", (String)request.HttpRequestMessage.Headers.GetValues("subscription_id").FirstOrDefault());
             metadata.Add("ApimSubscriptionName", (String)request.HttpRequestMessage.Headers.GetValues("subscription_name").FirstOrDefault());
-			
+			*/
             return metadata;
         }
 
