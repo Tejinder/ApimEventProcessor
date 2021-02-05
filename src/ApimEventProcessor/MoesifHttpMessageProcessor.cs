@@ -211,8 +211,8 @@ namespace ApimEventProcessor
             EventRequestModel moesifRequest = new EventRequestModel()
             {
                 Time = (DateTime) h.Properties[RequestTimeName],
-              /*  Uri = h.RequestUri.OriginalString,*/
-				Uri = (String)request.HttpRequestMessage.Headers.GetValues("originalURL").FirstOrDefault(),
+                Uri = h.RequestUri.OriginalString,
+			/*	Uri = (String)request.HttpRequestMessage.Headers.GetValues("originalURL").FirstOrDefault(),*/
                 Verb = h.Method.ToString(),
                 Headers = reqHeaders,
                 ApiVersion = _ApiVersion,
