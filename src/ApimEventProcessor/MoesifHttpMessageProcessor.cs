@@ -174,15 +174,19 @@ namespace ApimEventProcessor
         */
         public async Task<EventModel> BuildMoesifEvent(HttpMessage request, HttpMessage response){
             _Logger.LogDebug("Building Moesif event");
+
+            string clientIpAddress = safeGetHeaderFirstOrDefault(request, "clientIPAddress");
             EventRequestModel moesifRequest = await genEventRequestModel(request,
                                                                         ReqHeadersName,
                                                                         RequestTimeName,
-                                                                        _ApiVersion);
-            EventResponseModel moesifResponse = await genEventResponseModel(response);
+                                                                        _ApiVersion, clientIpAddress);
+            EventResponseModel moesifResponse = await genEventResponseModel(response, clientIpAddress);
             Dictionary<string, object> metadata = genMetadata(request, MetadataName);
             string skey = safeGetHeaderFirstOrDefault(request, _SessionTokenKey);
             string userId = safeGetOrNull(request, UserIdName);
             string companyId = safeGetOrNull(request, CompanyIdName);
+
+            request.HttpRequestMessage
             EventModel moesifEvent = new EventModel()
             {
                 Request = moesifRequest,
@@ -200,7 +204,7 @@ namespace ApimEventProcessor
         public async static Task<EventRequestModel> genEventRequestModel(HttpMessage request,
                                                                         string ReqHeadersName,
                                                                         string RequestTimeName,
-                                                                        string _ApiVersion)
+                                                                        string _ApiVersion, string clientIpAddress)
         {
             var h = request.HttpRequestMessage;
             var reqBody = h.Content != null 
@@ -208,9 +212,8 @@ namespace ApimEventProcessor
                             : null;
             var reqHeaders = HeadersUtils.deSerializeHeaders(h.Properties[ReqHeadersName]);
             var reqBodyWrapper = BodyUtil.Serialize(reqBody);
-			
-			string clientIpAddress = safeGetHeaderFirstOrDefault(request, "clientIPAddress");
-			 
+           
+            
             EventRequestModel moesifRequest = new EventRequestModel()
             {
                 Time = (DateTime) h.Properties[RequestTimeName],
@@ -228,7 +231,7 @@ namespace ApimEventProcessor
             return moesifRequest;
         }
 
-        public async static Task<EventResponseModel> genEventResponseModel(HttpMessage response)
+        public async static Task<EventResponseModel> genEventResponseModel(HttpMessage response, string clientIpAddress)
         {
             var h = response.HttpResponseMessage;
             var respBody = h.Content != null 
@@ -241,7 +244,8 @@ namespace ApimEventProcessor
             {
                 Time = DateTime.UtcNow,
                 Status = (int) h.StatusCode,
-                IpAddress = Environment.MachineName,
+                /* IpAddress = Environment.MachineName,*/
+                IpAddress =  clientIpAddress,
                 Headers = respHeaders,
                 Body = respBodyWrapper.Item1,
                 TransferEncoding = respBodyWrapper.Item2
