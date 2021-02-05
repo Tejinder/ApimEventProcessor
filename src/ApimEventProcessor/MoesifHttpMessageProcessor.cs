@@ -216,8 +216,9 @@ namespace ApimEventProcessor
                 Verb = h.Method.ToString(),
                 Headers = reqHeaders,
                 ApiVersion = _ApiVersion,
-                IpAddress = null,
+                /*IpAddress = null,*/
 				/*IpAddress = (String)request.HttpRequestMessage.Headers.GetValues("clientIPAddress").FirstOrDefault(),*/
+				IpAddress = safeGetOrNull(request, "ip_address"),
                 Body = reqBodyWrapper.Item1,
                 TransferEncoding = reqBodyWrapper.Item2
             };
