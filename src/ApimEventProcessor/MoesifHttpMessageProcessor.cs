@@ -218,7 +218,7 @@ namespace ApimEventProcessor
                 ApiVersion = _ApiVersion,
                 /*IpAddress = null,*/
 				/*IpAddress = (String)request.HttpRequestMessage.Headers.GetValues("clientIPAddress").FirstOrDefault(),*/
-				IpAddress = h.Properties["ipaddress"],
+				IpAddress = (String)h.Properties["ipaddress"],
                 Body = reqBodyWrapper.Item1,
                 TransferEncoding = reqBodyWrapper.Item2
             };
