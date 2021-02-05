@@ -179,21 +179,17 @@ namespace ApimEventProcessor
             _Logger.LogDebug("Building Moesif event clientIpAddress "+clientIpAddress);
             _Logger.LogDebug("Building Moesif event ReqHeadersName " + ReqHeadersName);
 
-            
+            _Logger.LogDebug("Building Moesif event h.Properties[ReqHeadersName] " + request.HttpRequestMessage.Properties[ReqHeadersName]);
 
-
-            var h = request.HttpRequestMessage.Headers;
-
-            _Logger.LogDebug("Building Moesif event h " + h);
-
-
-            String val = null;
-            if (h.Contains("clientIPAddress"))
+            Dictionary<string, string> reqheaders = HeadersUtils.deSerializeHeaders(request.HttpRequestMessage.Properties[ReqHeadersName]);
+            foreach (var h in reqheaders)
             {
-                val = h.GetValues("clientIPAddress").FirstOrDefault();
+                string n = h.Key.Trim();
+                string v = h.Value.Trim();
+                _Logger.LogDebug("Building Moesif event  n " + n);
+                _Logger.LogDebug("Building Moesif event v " + v);
             }
-
-            _Logger.LogDebug("Building Moesif event val " + val);
+           
 
             EventRequestModel moesifRequest = await genEventRequestModel(request,
                                                                         ReqHeadersName,
