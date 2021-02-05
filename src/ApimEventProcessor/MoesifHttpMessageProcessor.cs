@@ -186,7 +186,7 @@ namespace ApimEventProcessor
             string userId = safeGetOrNull(request, UserIdName);
             string companyId = safeGetOrNull(request, CompanyIdName);
 
-            request.HttpRequestMessage
+            
             EventModel moesifEvent = new EventModel()
             {
                 Request = moesifRequest,
