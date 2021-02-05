@@ -176,7 +176,8 @@ namespace ApimEventProcessor
             _Logger.LogDebug("Building Moesif event");
 
             string clientIpAddress = safeGetHeaderFirstOrDefault(request, "clientIPAddress");
-            _Logger.LogDebug("Building Moesif event clientIpAddress "+ clientIpAddress);
+            _Logger.LogDebug("Building Moesif event clientIpAddress "+clientIpAddress);
+            _Logger.LogDebug("Building Moesif event ReqHeadersName " + ReqHeadersName);
             EventRequestModel moesifRequest = await genEventRequestModel(request,
                                                                         ReqHeadersName,
                                                                         RequestTimeName,
