@@ -208,6 +208,9 @@ namespace ApimEventProcessor
                             : null;
             var reqHeaders = HeadersUtils.deSerializeHeaders(h.Properties[ReqHeadersName]);
             var reqBodyWrapper = BodyUtil.Serialize(reqBody);
+			
+			string clientIpAddress = safeGetHeaderFirstOrDefault(request, "clientIPAddress");
+			 
             EventRequestModel moesifRequest = new EventRequestModel()
             {
                 Time = (DateTime) h.Properties[RequestTimeName],
@@ -218,7 +221,7 @@ namespace ApimEventProcessor
                 ApiVersion = _ApiVersion,
                 /*IpAddress = null,*/
 				/*IpAddress = (String)request.HttpRequestMessage.Headers.GetValues("clientIPAddress").FirstOrDefault(),*/
-				IpAddress = (String)h.Properties["ipaddress"],
+				IpAddress = clientIpAddress,
                 Body = reqBodyWrapper.Item1,
                 TransferEncoding = reqBodyWrapper.Item2
             };
