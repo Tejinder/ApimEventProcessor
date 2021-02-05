@@ -211,11 +211,13 @@ namespace ApimEventProcessor
             EventRequestModel moesifRequest = new EventRequestModel()
             {
                 Time = (DateTime) h.Properties[RequestTimeName],
-                Uri = h.RequestUri.OriginalString,
+              /*  Uri = h.RequestUri.OriginalString,*/
+				Uri = (String)request.HttpRequestMessage.Headers.GetValues("originalURL").FirstOrDefault(),
                 Verb = h.Method.ToString(),
                 Headers = reqHeaders,
                 ApiVersion = _ApiVersion,
-                IpAddress = null,
+                /*IpAddress = null,*/
+				IpAddress = (String)request.HttpRequestMessage.Headers.GetValues("clientIPAddress").FirstOrDefault(),
                 Body = reqBodyWrapper.Item1,
                 TransferEncoding = reqBodyWrapper.Item2
             };
@@ -270,6 +272,9 @@ namespace ApimEventProcessor
             if (p[MetadataName] != null)
                 metadata = (Dictionary<string, object>) p[MetadataName];
             metadata.Add("ApimMessageId", request.MessageId.ToString());
+			metadata.Add("ApimSubscriptionId", (String)request.HttpRequestMessage.Headers.GetValues("subscription_id").FirstOrDefault());
+            metadata.Add("ApimSubscriptionName", (String)request.HttpRequestMessage.Headers.GetValues("subscription_name").FirstOrDefault());
+			
             return metadata;
         }
 
