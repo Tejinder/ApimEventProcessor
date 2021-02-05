@@ -175,11 +175,10 @@ namespace ApimEventProcessor
         public async Task<EventModel> BuildMoesifEvent(HttpMessage request, HttpMessage response){
             _Logger.LogDebug("Building Moesif event");
 
-            string clientIpAddress = safeGetHeaderFirstOrDefault(request, "clientIPAddress");
-            _Logger.LogDebug("Building Moesif event clientIpAddress "+clientIpAddress);
-            _Logger.LogDebug("Building Moesif event ReqHeadersName " + ReqHeadersName);
+            string clientIpAddress = "";
+            string subscriptionId = "";
+            string subscriptionName = "";
 
-            _Logger.LogDebug("Building Moesif event h.Properties[ReqHeadersName] " + request.HttpRequestMessage.Properties[ReqHeadersName]);
 
             Dictionary<string, string> reqheaders = HeadersUtils.deSerializeHeaders(request.HttpRequestMessage.Properties[ReqHeadersName]);
             foreach (var h in reqheaders)
@@ -188,8 +187,15 @@ namespace ApimEventProcessor
                 string v = h.Value.Trim();
                 if (n.Equals("clientIPAddress"))
                 {
-                    _Logger.LogDebug("Building Moesif event  n " + n);
-                    _Logger.LogDebug("Building Moesif event v " + v);
+                    clientIpAddress = v;
+                }
+                if (n.Equals("subscription_id"))
+                {  
+                    subscriptionId = v;
+                }
+                if (n.Equals("subscription_name"))
+                {
+                    subscriptionName = v;
                 }
             }
            
@@ -200,6 +206,10 @@ namespace ApimEventProcessor
                                                                         _ApiVersion, clientIpAddress);
             EventResponseModel moesifResponse = await genEventResponseModel(response, clientIpAddress);
             Dictionary<string, object> metadata = genMetadata(request, MetadataName);
+
+            metadata.Add("ApimSubscriptionId", subscriptionId);
+            metadata.Add("ApimSubscriptionName", subscriptionName);
+
             string skey = safeGetHeaderFirstOrDefault(request, _SessionTokenKey);
             string userId = safeGetOrNull(request, UserIdName);
             string companyId = safeGetOrNull(request, CompanyIdName);
