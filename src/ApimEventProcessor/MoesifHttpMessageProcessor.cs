@@ -186,8 +186,11 @@ namespace ApimEventProcessor
             {
                 string n = h.Key.Trim();
                 string v = h.Value.Trim();
-                _Logger.LogDebug("Building Moesif event  n " + n);
-                _Logger.LogDebug("Building Moesif event v " + v);
+                if (n.Equals("clientIPAddress"))
+                {
+                    _Logger.LogDebug("Building Moesif event  n " + n);
+                    _Logger.LogDebug("Building Moesif event v " + v);
+                }
             }
            
 
