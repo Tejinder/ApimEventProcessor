@@ -178,7 +178,7 @@ namespace ApimEventProcessor
             string clientIpAddress = "";
             string subscriptionId = "";
             string subscriptionName = "";
-
+			string correlationid = "";
 
             Dictionary<string, string> reqheaders = HeadersUtils.deSerializeHeaders(request.HttpRequestMessage.Properties[ReqHeadersName]);
             foreach (var h in reqheaders)
@@ -197,6 +197,10 @@ namespace ApimEventProcessor
                 {
                     subscriptionName = v;
                 }
+				if (n.Equals("correlationid"))
+                {
+                    correlationid = v;
+                }
             }
            
 
@@ -209,6 +213,7 @@ namespace ApimEventProcessor
 
             metadata.Add("ApimSubscriptionId", subscriptionId);
             metadata.Add("ApimSubscriptionName", subscriptionName);
+			metadata.Add("ApimCorrelationId", correlationid);
 
             string skey = safeGetHeaderFirstOrDefault(request, _SessionTokenKey);
             string userId = safeGetOrNull(request, UserIdName);
